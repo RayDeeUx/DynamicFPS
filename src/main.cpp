@@ -150,17 +150,17 @@ $on_game(ModsLoaded) {
 		reduceVolumeOnUnfocused = reduceVolumeOnUnfocusedNew;
 	});
 
-	fpsReductionPercent = Mod::get()->getSettingValue<float>("fpsReductionPercent");
+	fpsReductionPercent = std::clamp<float>(Mod::get()->getSettingValue<float>("fpsReductionPercent"), 0.1f, 100.f) / 100.f;
 	listenForSettingChanges<float>("fpsReductionPercent", [](const float fpsReductionPercentNew) {
 		fpsReductionPercent = std::clamp<float>(fpsReductionPercentNew, 0.1f, 100.f) / 100.f;
 	});
 
-	bgVolumeReductionPercent = Mod::get()->getSettingValue<float>("bgVolumeReductionPercent");
+	bgVolumeReductionPercent = std::clamp<float>(Mod::get()->getSettingValue<float>("bgVolumeReductionPercent"), 0, 100) / 100.f;
 	listenForSettingChanges<float>("bgVolumeReductionPercent", [](const float bgVolumeReductionPercentNew) {
 		bgVolumeReductionPercent = std::clamp<float>(bgVolumeReductionPercentNew, 0, 100) / 100.f;
 	});
 
-	sfxVolumeReductionPercent = Mod::get()->getSettingValue<float>("sfxVolumeReductionPercent");
+	sfxVolumeReductionPercent = std::clamp<float>(Mod::get()->getSettingValue<float>("sfxVolumeReductionPercent"), 0, 100) / 100.f;
 	listenForSettingChanges<float>("sfxVolumeReductionPercent", [](const float sfxVolumeReductionPercentNew) {
 		sfxVolumeReductionPercent = std::clamp<float>(sfxVolumeReductionPercentNew, 0, 100) / 100.f;
 	});
