@@ -48,6 +48,7 @@ void performUnfocus() {
 	gm->m_vsyncEnabled = false;
 	CCApplication::sharedApplication()->toggleVerticalSync(false);
 	CCDirector::get()->setAnimationInterval(1.f / std::clamp<float>((gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f), 10.f, originalFPSValue));
+	gm->updateCustomFPS();
 	#endif
 	#ifdef GEODE_IS_MACOS
 	if (sdl && sdl->getSettingValue<bool>("disable-vsync") && !sdl->getSettingValue<bool>("uncap-framerate")) {
@@ -80,6 +81,7 @@ void performRefocus() {
 	gm->m_vsyncEnabled = gm->getGameVariable("0030");
 	CCApplication::sharedApplication()->toggleVerticalSync(gm->getGameVariable("0030"));
 	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
+	gm->updateCustomFPS();
 	#endif
 	#ifdef GEODE_IS_MACOS
 	Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
@@ -135,6 +137,7 @@ $on_game(Exiting) {
 	gm->m_vsyncEnabled = gm->getGameVariable("0030");
 	CCApplication::sharedApplication()->toggleVerticalSync(gm->getGameVariable("0030"));
 	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
+	gm->updateCustomFPS();
 	#endif
 	#ifdef GEODE_IS_MACOS
 	if (Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl"); sdl) {
