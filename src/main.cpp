@@ -43,13 +43,13 @@ void performUnfocus() {
 
 	#ifdef GEODE_IS_WINDOWS
 	gm->m_customFPSTarget = originalFPSValue * fpsReductionPercent;
-	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
+	CCDirector::get()->setAnimationInterval(1.f / std::clamp<float>((gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f), 1.f, originalFPSValue));
 	#endif
 
 	#ifdef GEODE_IS_MACOS
 	if (sdl && sdl->getSettingValue<bool>("disable-vsync") && !sdl->getSettingValue<bool>("uncap-framerate")) {
 		wasQualifiedForSDL = true;
-		sdl->setSettingValue<int>("framerate-limit", originalFPSValue * fpsReductionPercent);
+		sdl->setSettingValue<int>("framerate-limit", std::clamp<int>(originalFPSValue * fpsReductionPercent, 10, trueOriginalFPSFromSDL));
 	}
 	#endif
 
@@ -127,8 +127,15 @@ class $modify(MyAppDelegate, AppDelegate) {
 $on_game(Exiting) {
 	if (!isUnfocused) return;
 	GameManager* gm = GameManager::get();
+	#ifdef GEODE_IS_WINDOWS
 	gm->m_customFPSTarget = originalFPSValue;
 	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
+	#endif
+	#ifdef GEODE_IS_MACOS
+	if (Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl"); sdl) {
+		sdl->setSettingValue<int>("framerate-limit", trueOriginalFPSFromSDL);
+	}
+	#endif
 	FMODAudioEngine::get()->setBackgroundMusicVolume(musicVolumeOriginal);
 	FMODAudioEngine::get()->setEffectsVolume(sfxVolumeOriginal);
 }
@@ -138,12 +145,13 @@ $on_game(ModsLoaded) {
 	theShowIsGo = true;
 	GameManager* gm = GameManager::get();
 	enabled = Mod::get()->getSettingValue<bool>("enabled");
-	originalFPSValue = originalFPSValue = gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f;
+	originalFPSValue = gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f;
 	#endif
 	#ifdef GEODE_IS_MACOS
 	enabled = Mod::get()->getSettingValue<bool>("enabled") && Loader::get()->isModLoaded("zmx.sdl");
 	if (Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl"); sdl) {
-		originalFPSValue = std::clamp<int>(sdl->getSettingValue<int>("framerate-limit"), 10, 120);
+		trueOriginalFPSFromSDL = sdl->getSettingValue<int>("framerate-limit");
+		originalFPSValue = std::clamp<int>(trueOriginalFPSFromSDL, 10, 120);
 	}
 	#endif
 	listenForSettingChanges<bool>("enabled", [](const bool enabledNew) {
