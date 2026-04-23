@@ -37,29 +37,29 @@ void performUnfocus() {
 	log::debug("enabled: {}", enabled);
 	log::debug("originalFPSValue: {}", originalFPSValue);
 	log::debug("fpsReductionPercent: {}", fpsReductionPercent);
-	log::debug("result: {}", originalFPSValue / fpsReductionPercent);
+	log::debug("result: {}", originalFPSValue / std::clamp<float>(fpsReductionPercent, 1.f, 100.f));
 
 	#ifdef GEODE_IS_WINDOWS
-	gm->m_customFPSTarget = originalFPSValue / fpsReductionPercent;
+	gm->m_customFPSTarget = originalFPSValue / std::clamp<float>(fpsReductionPercent, 1.f, 100.f);
 	#endif
 
 	#ifdef GEODE_IS_MACOS
 	if (sdl && sdl->getSettingValue<bool>("disable-vsync") && !sdl->getSettingValue<bool>("uncap-framerate")) {
 		wasQualifiedForSDL = true;
-		sdl->setSettingValue<int>("framerate-limit", originalFPSValue / fpsReductionPercent);
+		sdl->setSettingValue<int>("framerate-limit", originalFPSValue / std::clamp<float>(fpsReductionPercent, 1.f, 100.f));
 	}
 	#endif
 
 	if (reduceVolumeOnUnfocused) {
 		log::debug("gm->m_bgVolume: {}", gm->m_bgVolume);
-		log::debug("m_bgVolume result: {}", gm->m_bgVolume / bgVolumeReductionPercent);
+		log::debug("m_bgVolume result: {}", gm->m_bgVolume / std::clamp<float>(bgVolumeReductionPercent, 1.f, 100.f));
 		log::debug("gm->m_sfxVolume: {}", gm->m_sfxVolume);
-		log::debug("m_sfxVolume result: {}", gm->m_sfxVolume / sfxVolumeReductionPercent);
+		log::debug("m_sfxVolume result: {}", gm->m_sfxVolume / std::clamp<float>(sfxVolumeReductionPercent, 1.f, 100.f));
 		FMODAudioEngine* fmod = FMODAudioEngine::get();
 		musicVolumeOriginal = fmod->m_musicVolume;
 		sfxVolumeOriginal = fmod->m_sfxVolume;
-		fmod->setBackgroundMusicVolume(fmod->m_musicVolume / bgVolumeReductionPercent);
-		fmod->setEffectsVolume(fmod->m_sfxVolume / sfxVolumeReductionPercent);
+		fmod->setBackgroundMusicVolume(fmod->m_musicVolume / std::clamp<float>(bgVolumeReductionPercent, 1.f, 100.f));
+		fmod->setEffectsVolume(fmod->m_sfxVolume / std::clamp<float>(sfxVolumeReductionPercent, 1.f, 100.f));
 	}
 }
 
@@ -152,16 +152,16 @@ $on_game(ModsLoaded) {
 
 	fpsReductionPercent = Mod::get()->getSettingValue<float>("fpsReductionPercent");
 	listenForSettingChanges<float>("fpsReductionPercent", [](const float fpsReductionPercentNew) {
-		fpsReductionPercent = std::clamp<float>(fpsReductionPercentNew, 0.1, 100) / 100.f;
+		fpsReductionPercent = std::clamp<float>(fpsReductionPercentNew, 0.1f, 100.f) / 100.f;
 	});
 
 	bgVolumeReductionPercent = Mod::get()->getSettingValue<float>("bgVolumeReductionPercent");
 	listenForSettingChanges<float>("bgVolumeReductionPercent", [](const float bgVolumeReductionPercentNew) {
-		bgVolumeReductionPercent = std::clamp<float>(bgVolumeReductionPercentNew, 0, 100) / 100.f;
+		bgVolumeReductionPercent = std::clamp<float>(bgVolumeReductionPercentNew, 0.f, 100.f) / 100.f;
 	});
 
 	sfxVolumeReductionPercent = Mod::get()->getSettingValue<float>("sfxVolumeReductionPercent");
 	listenForSettingChanges<float>("sfxVolumeReductionPercent", [](const float sfxVolumeReductionPercentNew) {
-		sfxVolumeReductionPercent = std::clamp<float>(sfxVolumeReductionPercentNew, 0, 100) / 100.f;
+		sfxVolumeReductionPercent = std::clamp<float>(sfxVolumeReductionPercentNew, 0.f, 100.f) / 100.f;
 	});
 }
