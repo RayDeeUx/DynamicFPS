@@ -6,6 +6,8 @@ bool unfocusedForFirstTime = false;
 
 bool isUnfocused = false;
 
+bool windowsOnlyVSyncValue = false;
+
 float originalFPSValue = 60.f;
 int trueOriginalFPSFromSDL = 10;
 
@@ -43,6 +45,7 @@ void performUnfocus() {
 
 	#ifdef GEODE_IS_WINDOWS
 	gm->m_customFPSTarget = originalFPSValue * fpsReductionPercent;
+	CCApplication::sharedApplication()->toggleVerticalSync(false);
 	CCDirector::get()->setAnimationInterval(1.f / std::clamp<float>((gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f), 10.f, originalFPSValue));
 	#endif
 	#ifdef GEODE_IS_MACOS
@@ -73,6 +76,7 @@ void performRefocus() {
 	#ifdef GEODE_IS_WINDOWS
 	GameManager* gm = GameManager::get();
 	gm->m_customFPSTarget = originalFPSValue;
+	CCApplication::sharedApplication()->toggleVerticalSync(gm->getGameVariable("0030"));
 	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
 	#endif
 	#ifdef GEODE_IS_MACOS
@@ -126,6 +130,7 @@ $on_game(Exiting) {
 	GameManager* gm = GameManager::get();
 	#ifdef GEODE_IS_WINDOWS
 	gm->m_customFPSTarget = originalFPSValue;
+	CCApplication::sharedApplication()->toggleVerticalSync(gm->getGameVariable("0030"));
 	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
 	#endif
 	#ifdef GEODE_IS_MACOS
