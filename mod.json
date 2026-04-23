@@ -18,7 +18,7 @@
 		},
 		"fpsReductionPercent": {
 			"name": "FPS Reduction (% of your current FPS)",
-			"description": "<c-ff0000>***__REQUIRES SDL MOD BY QIMIKO, DISABLED VSYNC, AND DISABLED FRAMERATE CAP TO APPLY.__</c>\n\n<mod:zmx.sdl>\n\nDecide how much to reduce the FPS by (as a percentage of your current FPS) when the game window is unfocused.",
+			"description": "<c-ff0000>***__FOR MACOS USERS: REQUIRES SDL MOD BY QIMIKO, DISABLED VSYNC, AND DISABLED FRAMERATE CAP TO APPLY.__***</c>\n\n<mod:zmx.sdl>\n\nDecide how much to reduce the FPS by (as a percentage of your current FPS) when the game window is unfocused.",
 			"type": "float",
 			"default": 10,
 			"min": 5,

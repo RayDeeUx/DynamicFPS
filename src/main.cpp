@@ -20,76 +20,100 @@ float sfxVolumeReductionPercent = .1f;
 
 bool wasQualifiedForSDL = false;
 
-class $modify(MyAppDelegate, AppDelegate) {
-	void applicationWillResignActive() {
-		if (!enabled || !theShowIsGo) return AppDelegate::applicationWillResignActive();
+void performUnfocus() {
+	if (isUnfocused) return;
+	if (!enabled || !theShowIsGo) return;
+	isUnfocused = true;
 
-		GameManager* gm = GameManager::get();
-		#ifdef GEODE_IS_WINDOWS
-		originalFPSValue = gm->m_customFPSTarget;
-		#endif
-		#ifdef GEODE_IS_MACOS
-		Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
-		originalFPSValue = std::clamp<int>(sdl->getSettingValue<int>("framerate-limit"), 10, 120);
-		#endif
+	GameManager* gm = GameManager::get();
+	#ifdef GEODE_IS_WINDOWS
+	originalFPSValue = gm->m_customFPSTarget;
+	#endif
+	#ifdef GEODE_IS_MACOS
+	Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
+	originalFPSValue = std::clamp<int>(sdl->getSettingValue<int>("framerate-limit"), 10, 120);
+	#endif
 
-		log::debug("enabled: {}", enabled);
-		log::debug("originalFPSValue: {}", originalFPSValue);
-		log::debug("fpsReductionPercent: {}", fpsReductionPercent);
-		log::debug("result: {}", originalFPSValue / fpsReductionPercent);
+	log::debug("enabled: {}", enabled);
+	log::debug("originalFPSValue: {}", originalFPSValue);
+	log::debug("fpsReductionPercent: {}", fpsReductionPercent);
+	log::debug("result: {}", originalFPSValue / fpsReductionPercent);
 
-		AppDelegate::applicationWillResignActive();
-		isUnfocused = true;
+	#ifdef GEODE_IS_WINDOWS
+	gm->m_customFPSTarget = originalFPSValue / fpsReductionPercent;
+	#endif
 
-		#ifdef GEODE_IS_WINDOWS
-		gm->m_customFPSTarget = originalFPSValue / fpsReductionPercent;
-		#endif
-
-		#ifdef GEODE_IS_MACOS
-		if (sdl && sdl->getSettingValue<bool>("disable-vsync") && !sdl->getSettingValue<bool>("uncap-framerate")) {
-			wasQualifiedForSDL = true;
-			sdl->setSettingValue<int>("framerate-limit", originalFPSValue / fpsReductionPercent);
-		}
-		#endif
-
-		if (reduceVolumeOnUnfocused) {
-			log::debug("gm->m_bgVolume: {}", gm->m_bgVolume);
-			log::debug("m_bgVolume result: {}", gm->m_bgVolume / bgVolumeReductionPercent);
-			log::debug("gm->m_sfxVolume: {}", gm->m_sfxVolume);
-			log::debug("m_sfxVolume result: {}", gm->m_sfxVolume / sfxVolumeReductionPercent);
-			FMODAudioEngine* fmod = FMODAudioEngine::get();
-			musicVolumeOriginal = fmod->m_musicVolume;
-			fmod->setBackgroundMusicVolume(fmod->m_musicVolume / bgVolumeReductionPercent);
-			sfxVolumeOriginal = fmod->m_sfxVolume;
-			fmod->setEffectsVolume(fmod->m_sfxVolume / sfxVolumeReductionPercent);
-		}
+	#ifdef GEODE_IS_MACOS
+	if (sdl && sdl->getSettingValue<bool>("disable-vsync") && !sdl->getSettingValue<bool>("uncap-framerate")) {
+		wasQualifiedForSDL = true;
+		sdl->setSettingValue<int>("framerate-limit", originalFPSValue / fpsReductionPercent);
 	}
-	void applicationWillBecomeActive() {
-		if (!enabled || !theShowIsGo) return AppDelegate::applicationWillBecomeActive();
-		
-		AppDelegate::applicationWillBecomeActive();
-		isUnfocused = false;
+	#endif
 
-		GameManager* gm = GameManager::get();
+	if (reduceVolumeOnUnfocused) {
+		log::debug("gm->m_bgVolume: {}", gm->m_bgVolume);
+		log::debug("m_bgVolume result: {}", gm->m_bgVolume / bgVolumeReductionPercent);
+		log::debug("gm->m_sfxVolume: {}", gm->m_sfxVolume);
+		log::debug("m_sfxVolume result: {}", gm->m_sfxVolume / sfxVolumeReductionPercent);
+		FMODAudioEngine* fmod = FMODAudioEngine::get();
+		musicVolumeOriginal = fmod->m_musicVolume;
+		sfxVolumeOriginal = fmod->m_sfxVolume;
+		fmod->setBackgroundMusicVolume(fmod->m_musicVolume / bgVolumeReductionPercent);
+		fmod->setEffectsVolume(fmod->m_sfxVolume / sfxVolumeReductionPercent);
+	}
+}
 
-		#ifdef GEODE_IS_WINDOWS
-		gm->m_customFPSTarget = originalFPSValue;
-		#endif
+void performRefocus() {
+	if (!isUnfocused) return;
+	if (!enabled || !theShowIsGo) return;
+	isUnfocused = false;
 
-		#ifdef GEODE_IS_MACOS
-		Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
-		if (sdl && wasQualifiedForSDL) {
-			sdl->setSettingValue<int>("framerate-limit", originalFPSValue);
-			wasQualifiedForSDL = false;
-		}
-		#endif
+	GameManager* gm = GameManager::get();
 
-		if (reduceVolumeOnUnfocused) {
-			FMODAudioEngine::get()->setBackgroundMusicVolume(musicVolumeOriginal);
-			FMODAudioEngine::get()->setEffectsVolume(sfxVolumeOriginal);
-		}
+	#ifdef GEODE_IS_WINDOWS
+	gm->m_customFPSTarget = originalFPSValue;
+	#endif
+
+	#ifdef GEODE_IS_MACOS
+	Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
+	if (sdl && wasQualifiedForSDL) {
+		sdl->setSettingValue<int>("framerate-limit", originalFPSValue);
+		wasQualifiedForSDL = false;
+	}
+	#endif
+
+	if (reduceVolumeOnUnfocused) {
+		FMODAudioEngine::get()->setBackgroundMusicVolume(musicVolumeOriginal);
+		FMODAudioEngine::get()->setEffectsVolume(sfxVolumeOriginal);
+	}
+}
+
+#ifdef GEODE_IS_WINDOWS
+class DynamicFPSObserverForWindows final : public CCNode {
+	void checkFocusScheduler(float) { checkFocus(); }
+	static void checkFocus() {
+		if (GetActiveWindow() == WindowFromDC(wglGetCurrentDC())) performRefocus();
+		else performUnfocus();
 	}
 };
+
+$on_game(Loaded) {
+	GameManager::get()->schedule(schedule_selector(DynamicFPSObserverForWindows::checkFocusScheduler), .125f);
+}
+#endif
+
+#ifdef GEODE_IS_MACOS
+class $modify(MyAppDelegate, AppDelegate) {
+	void applicationWillResignActive() {
+		AppDelegate::applicationWillResignActive();
+		performUnfocus();
+	}
+	void applicationWillBecomeActive() {
+		AppDelegate::applicationWillBecomeActive();
+		performRefocus();
+	}
+};
+#endif
 
 $on_game(Exiting) {
 	if (!isUnfocused) return;
