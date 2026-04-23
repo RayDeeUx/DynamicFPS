@@ -63,6 +63,7 @@ class $modify(MyAppDelegate, AppDelegate) {
 		#endif
 
 		#ifdef GEODE_IS_MACOS
+		Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
 		if (sdl && wasQualifiedForSDL) {
 			sdl->setSettingValue<int>("framerate-limit", originalFPSValue);
 			wasQualifiedForSDL = false;
