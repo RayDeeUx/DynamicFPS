@@ -2,6 +2,8 @@
 
 using namespace geode::prelude;
 
+bool theShowIsGo = false; 
+
 bool isUnfocused = false;
 
 float originalFPSValue = 60.f;
@@ -20,7 +22,7 @@ bool wasQualifiedForSDL = false;
 
 class $modify(MyAppDelegate, AppDelegate) {
 	void applicationWillResignActive() {
-		if (!enabled) return AppDelegate::applicationWillResignActive();
+		if (!enabled || !theShowIsGo) return AppDelegate::applicationWillResignActive();
 
 		GameManager* gm = GameManager::get();
 		#ifdef GEODE_IS_WINDOWS
@@ -63,7 +65,7 @@ class $modify(MyAppDelegate, AppDelegate) {
 		}
 	}
 	void applicationWillBecomeActive() {
-		if (!enabled) return AppDelegate::applicationWillBecomeActive();
+		if (!enabled || !theShowIsGo) return AppDelegate::applicationWillBecomeActive();
 		
 		AppDelegate::applicationWillBecomeActive();
 		isUnfocused = false;
@@ -98,13 +100,17 @@ $on_game(Exiting) {
 }
 
 $on_game(ModsLoaded) {
-	originalFPSValue = GameManager::get()->m_customFPSTarget;
+	theShowIsGo = true;
 
 	#ifdef GEODE_IS_WINDOWS
 	enabled = Mod::get()->getSettingValue<bool>("enabled");
+	originalFPSValue = GameManager::get()->m_customFPSTarget;
 	#endif
 	#ifdef GEODE_IS_MACOS
 	enabled = Mod::get()->getSettingValue<bool>("enabled") && Loader::get()->isModLoaded("zmx.sdl");
+	if (Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl"); sdl) {
+		originalFPSValue = std::clamp<int>(sdl->getSettingValue<int>("framerate-limit"), 10, 120);
+	}
 	#endif
 	listenForSettingChanges<bool>("enabled", [](const bool enabledNew) {
 		enabled = enabledNew;
