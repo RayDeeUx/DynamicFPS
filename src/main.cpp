@@ -34,33 +34,32 @@ class $modify(MyAppDelegate, AppDelegate) {
 		log::debug("enabled: {}", enabled);
 		log::debug("originalFPSValue: {}", originalFPSValue);
 		log::debug("fpsReductionPercent: {}", fpsReductionPercent);
-		log::debug("result: {}", originalFPSValue * fpsReductionPercent);
+		log::debug("result: {}", originalFPSValue / fpsReductionPercent);
 
 		AppDelegate::applicationWillResignActive();
 		isUnfocused = true;
 
 		#ifdef GEODE_IS_WINDOWS
-		gm->m_customFPSTarget = originalFPSValue * fpsReductionPercent;
-		log::debug("gm->m_customFPSTarget: {}", gm->m_customFPSTarget);
+		gm->m_customFPSTarget = originalFPSValue / fpsReductionPercent;
 		#endif
 
 		#ifdef GEODE_IS_MACOS
 		if (sdl && sdl->getSettingValue<bool>("disable-vsync") && !sdl->getSettingValue<bool>("uncap-framerate")) {
 			wasQualifiedForSDL = true;
-			sdl->setSettingValue<int>("framerate-limit", originalFPSValue * fpsReductionPercent);
+			sdl->setSettingValue<int>("framerate-limit", originalFPSValue / fpsReductionPercent);
 		}
 		#endif
 
 		if (reduceVolumeOnUnfocused) {
 			log::debug("gm->m_bgVolume: {}", gm->m_bgVolume);
-			log::debug("m_bgVolume result: {}", gm->m_bgVolume * bgVolumeReductionPercent);
+			log::debug("m_bgVolume result: {}", gm->m_bgVolume / bgVolumeReductionPercent);
 			log::debug("gm->m_sfxVolume: {}", gm->m_sfxVolume);
-			log::debug("m_sfxVolume result: {}", gm->m_sfxVolume * sfxVolumeReductionPercent);
+			log::debug("m_sfxVolume result: {}", gm->m_sfxVolume / sfxVolumeReductionPercent);
 			FMODAudioEngine* fmod = FMODAudioEngine::get();
 			musicVolumeOriginal = fmod->m_musicVolume;
-			fmod->setBackgroundMusicVolume(fmod->m_musicVolume * bgVolumeReductionPercent);
+			fmod->setBackgroundMusicVolume(fmod->m_musicVolume / bgVolumeReductionPercent);
 			sfxVolumeOriginal = fmod->m_sfxVolume;
-			fmod->setEffectsVolume(fmod->m_sfxVolume * sfxVolumeReductionPercent);
+			fmod->setEffectsVolume(fmod->m_sfxVolume / sfxVolumeReductionPercent);
 		}
 	}
 	void applicationWillBecomeActive() {
