@@ -7,6 +7,7 @@ bool unfocusedForFirstTime = false;
 bool isUnfocused = false;
 
 float originalFPSValue = 60.f;
+int trueOriginalFPSFromSDL = 10;
 
 float musicVolumeOriginal = 1.f;
 float sfxVolumeOriginal = 1.f;
@@ -31,7 +32,8 @@ void performUnfocus() {
 	#endif
 	#ifdef GEODE_IS_MACOS
 	Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
-	originalFPSValue = std::clamp<int>(sdl->getSettingValue<int>("framerate-limit"), 10, 120);
+	trueOriginalFPSFromSDL = sdl->getSettingValue<int>("framerate-limit");
+	originalFPSValue = std::clamp<int>(trueOriginalFPSFromSDL, 10, 120);
 	#endif
 
 	log::debug("enabled: {}", enabled);
@@ -78,7 +80,7 @@ void performRefocus() {
 	#ifdef GEODE_IS_MACOS
 	Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
 	if (sdl && wasQualifiedForSDL) {
-		sdl->setSettingValue<int>("framerate-limit", originalFPSValue);
+		sdl->setSettingValue<int>("framerate-limit", trueOriginalFPSFromSDL);
 		wasQualifiedForSDL = false;
 	}
 	#endif
