@@ -43,7 +43,7 @@ void performUnfocus() {
 
 	#ifdef GEODE_IS_WINDOWS
 	gm->m_customFPSTarget = originalFPSValue * fpsReductionPercent;
-	CCDirector::get()->setAnimationInterval(1.f / std::clamp<float>((gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f), 1.f, originalFPSValue));
+	CCDirector::get()->setAnimationInterval(1.f / std::clamp<float>((gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f), 10.f, originalFPSValue));
 	#endif
 	#ifdef GEODE_IS_MACOS
 	if (sdl && sdl->getSettingValue<bool>("disable-vsync") && !sdl->getSettingValue<bool>("uncap-framerate")) {
