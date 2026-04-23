@@ -90,6 +90,7 @@ void performRefocus() {
 
 #ifdef GEODE_IS_WINDOWS
 class DynamicFPSObserverForWindows final : public CCNode {
+public:
 	void checkFocusScheduler(float) { checkFocus(); }
 	static void checkFocus() {
 		if (GetActiveWindow() == WindowFromDC(wglGetCurrentDC())) performRefocus();
