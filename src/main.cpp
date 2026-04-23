@@ -23,7 +23,7 @@ class $modify(MyAppDelegate, AppDelegate) {
 		#endif
 		#ifdef GEODE_IS_MACOS
 		Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
-		originalFPSValue = sdl->getSettingValue<int>("framerate-limit");
+		originalFPSValue = std::clamp<int>(sdl->getSettingValue<int>("framerate-limit"), 10, 120);
 		#endif
 
 		log::debug("enabled: {}", enabled);
