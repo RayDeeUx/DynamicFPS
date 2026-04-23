@@ -45,6 +45,7 @@ void performUnfocus() {
 
 	#ifdef GEODE_IS_WINDOWS
 	gm->m_customFPSTarget = originalFPSValue * fpsReductionPercent;
+	gm->m_vsyncEnabled = false;
 	CCApplication::sharedApplication()->toggleVerticalSync(false);
 	CCDirector::get()->setAnimationInterval(1.f / std::clamp<float>((gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f), 10.f, originalFPSValue));
 	#endif
@@ -76,6 +77,7 @@ void performRefocus() {
 	#ifdef GEODE_IS_WINDOWS
 	GameManager* gm = GameManager::get();
 	gm->m_customFPSTarget = originalFPSValue;
+	gm->m_vsyncEnabled = gm->getGameVariable("0030");
 	CCApplication::sharedApplication()->toggleVerticalSync(gm->getGameVariable("0030"));
 	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
 	#endif
@@ -130,6 +132,7 @@ $on_game(Exiting) {
 	GameManager* gm = GameManager::get();
 	#ifdef GEODE_IS_WINDOWS
 	gm->m_customFPSTarget = originalFPSValue;
+	gm->m_vsyncEnabled = gm->getGameVariable("0030");
 	CCApplication::sharedApplication()->toggleVerticalSync(gm->getGameVariable("0030"));
 	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
 	#endif
