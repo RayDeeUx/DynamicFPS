@@ -27,7 +27,7 @@ void performUnfocus() {
 
 	GameManager* gm = GameManager::get();
 	#ifdef GEODE_IS_WINDOWS
-	originalFPSValue = gm->m_customFPSTarget;
+	originalFPSValue = gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f;
 	#endif
 	#ifdef GEODE_IS_MACOS
 	Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
@@ -69,9 +69,8 @@ void performRefocus() {
 	if (!enabled || !theShowIsGo) return;
 	isUnfocused = false;
 
-	GameManager* gm = GameManager::get();
-
 	#ifdef GEODE_IS_WINDOWS
+	GameManager* gm = GameManager::get();
 	gm->m_customFPSTarget = originalFPSValue;
 	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
 	#endif
@@ -135,8 +134,9 @@ $on_game(Exiting) {
 $on_game(ModsLoaded) {
 	#ifdef GEODE_IS_WINDOWS
 	theShowIsGo = true;
+	GameManager* gm = GameManager::get();
 	enabled = Mod::get()->getSettingValue<bool>("enabled");
-	originalFPSValue = GameManager::get()->m_customFPSTarget;
+	originalFPSValue = originalFPSValue = gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f;
 	#endif
 	#ifdef GEODE_IS_MACOS
 	enabled = Mod::get()->getSettingValue<bool>("enabled") && Loader::get()->isModLoaded("zmx.sdl");
