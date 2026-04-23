@@ -95,7 +95,7 @@ $on_game(ModsLoaded) {
 	#endif
 	listenForSettingChanges<bool>("enabled", [](const bool enabledNew) {
 		enabled = enabledNew;
-		#ifdef
+		#ifdef GEODE_IS_MACOS
 		if (Loader::get()->isModLoaded("zmx.sdl")) return;
 		MDPopup::create("Heads up!", "DynamicFPS <c-ff0000>***__REQUIRES__***</c> <cl>SDL Mod by qimiko</c> in order to work! Otherwise, this mod is effectively deadweight!\n\n<mod:zmx.sdl>", "I Understand")->show();
 		#endif
