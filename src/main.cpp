@@ -2,7 +2,12 @@
 
 using namespace geode::prelude;
 
+bool isUnfocused = false;
+
 float originalFPSValue = 60.f;
+
+float musicVolumeOriginal = 1.f;
+float sfxVolumeOriginal = 1.f;
 
 bool enabled = true;
 bool reduceVolumeOnUnfocused = false;
@@ -32,6 +37,7 @@ class $modify(MyAppDelegate, AppDelegate) {
 		log::debug("result: {}", originalFPSValue * fpsReductionPercent);
 
 		AppDelegate::applicationWillResignActive();
+		isUnfocused = true;
 
 		#ifdef GEODE_IS_WINDOWS
 		gm->m_customFPSTarget = originalFPSValue * fpsReductionPercent;
@@ -50,12 +56,19 @@ class $modify(MyAppDelegate, AppDelegate) {
 			log::debug("m_bgVolume result: {}", gm->m_bgVolume * bgVolumeReductionPercent);
 			log::debug("gm->m_sfxVolume: {}", gm->m_sfxVolume);
 			log::debug("m_sfxVolume result: {}", gm->m_sfxVolume * sfxVolumeReductionPercent);
-			FMODAudioEngine::get()->setBackgroundMusicVolume(gm->m_bgVolume * bgVolumeReductionPercent);
-			FMODAudioEngine::get()->setEffectsVolume(gm->m_sfxVolume * sfxVolumeReductionPercent);
+			FMODAudioEngine* fmod = FMODAudioEngine::get();
+			musicVolumeOriginal = fmod->m_musicVolume;
+			fmod->setBackgroundMusicVolume(fmod->m_musicVolume * bgVolumeReductionPercent);
+			sfxVolumeOriginal = fmod->m_sfxVolume;
+			fmod->setEffectsVolume(fmod->m_sfxVolume * sfxVolumeReductionPercent);
 		}
 	}
 	void applicationWillBecomeActive() {
 		if (!enabled) return AppDelegate::applicationWillBecomeActive();
+		
+		AppDelegate::applicationWillBecomeActive();
+		isUnfocused = false;
+
 		GameManager* gm = GameManager::get();
 
 		#ifdef GEODE_IS_WINDOWS
@@ -70,19 +83,19 @@ class $modify(MyAppDelegate, AppDelegate) {
 		}
 		#endif
 
-		AppDelegate::applicationWillBecomeActive();
 		if (reduceVolumeOnUnfocused) {
-			FMODAudioEngine::get()->setBackgroundMusicVolume(gm->m_bgVolume);
-			FMODAudioEngine::get()->setEffectsVolume(gm->m_sfxVolume);
+			FMODAudioEngine::get()->setBackgroundMusicVolume(musicVolumeOriginal);
+			FMODAudioEngine::get()->setEffectsVolume(sfxVolumeOriginal);
 		}
 	}
 };
 
 $on_game(Exiting) {
+	if (!isUnfocused) return;
 	GameManager* gm = GameManager::get();
 	gm->m_customFPSTarget = originalFPSValue;
-	FMODAudioEngine::get()->setBackgroundMusicVolume(gm->m_bgVolume);
-	FMODAudioEngine::get()->setEffectsVolume(gm->m_sfxVolume);
+	FMODAudioEngine::get()->setBackgroundMusicVolume(musicVolumeOriginal);
+	FMODAudioEngine::get()->setEffectsVolume(sfxVolumeOriginal);
 }
 
 $on_game(ModsLoaded) {
