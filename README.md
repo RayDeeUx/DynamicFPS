@@ -7,4 +7,6 @@ Inspirations (mostly based on GitHub username):
 - PolloVerde2
 - $!D@$tuff
 
+Mod logo and idea based on the original mod logo of the Dynamic FPS mod for Minecraft Fabric.
+
 This [Geode mod](https://geode-sdk.org) is licensed under LGPLv2.

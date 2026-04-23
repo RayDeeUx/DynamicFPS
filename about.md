@@ -11,4 +11,6 @@ Inspirations (mostly based on GitHub username):
 
 <mod:zmx.sdl>
 
+Mod logo and idea based on the original mod logo of the Dynamic FPS mod for Minecraft Fabric.
+
 This [Geode mod](https://geode-sdk.org) is licensed under LGPLv2. To report bugs or get help with using my mods, press the Discord button in the lower left corner.
