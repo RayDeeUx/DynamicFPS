@@ -87,7 +87,7 @@ $on_game(Exiting) {
 $on_game(ModsLoaded) {
 	originalFPSValue = GameManager::get()->m_customFPSTarget;
 
-	#if GEODE_IS_WINDOWS
+	#ifdef GEODE_IS_WINDOWS
 	enabled = Mod::get()->getSettingValue<bool>("enabled");
 	#endif
 	#ifdef GEODE_IS_MACOS
