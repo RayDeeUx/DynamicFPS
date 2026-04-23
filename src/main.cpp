@@ -152,7 +152,7 @@ $on_game(ModsLoaded) {
 
 	fpsReductionPercent = Mod::get()->getSettingValue<float>("fpsReductionPercent");
 	listenForSettingChanges<float>("fpsReductionPercent", [](const float fpsReductionPercentNew) {
-		fpsReductionPercent = std::clamp<float>(fpsReductionPercentNew, 5, 100) / 100.f;
+		fpsReductionPercent = std::clamp<float>(fpsReductionPercentNew, 0.1, 100) / 100.f;
 	});
 
 	bgVolumeReductionPercent = Mod::get()->getSettingValue<float>("bgVolumeReductionPercent");
