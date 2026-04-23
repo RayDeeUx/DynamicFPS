@@ -7,6 +7,8 @@ Inspirations (mostly based on GitHub username):
 - PolloVerde2
 - $!D@$tuff
 
+<c-ff0000>***__NOTE__***: FOR BEST RESULTS, ***__DO NOT USE VSYNC.__***</c>
+
 <c-ff0000>***__NOTE FOR MACOS USERS__***:</c> <cl>SDL Mod by qimiko</c> <c-ff0000>is ***__REQUIRED__*** TO USE THIS MOD. NO EXCEPTONS.</c>
 
 <mod:zmx.sdl>

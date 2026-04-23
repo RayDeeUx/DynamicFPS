@@ -20,6 +20,7 @@
 			"name": "FPS Reduction (% of your current FPS)",
 			"description": "<c-ff0000>***__NOTE FOR MACOS USERS: REQUIRES SDL MOD BY QIMIKO, DISABLED VSYNC, AND DISABLED FRAMERATE CAP TO APPLY.__***</c>\n\n<mod:zmx.sdl>\n\nDecide how much to reduce the FPS by (as a percentage of your current FPS) when the game window is unfocused.",
 			"type": "float",
+			"enable-if": "enabled",
 			"default": 10,
 			"min": 0.1,
 			"max": 100,
@@ -34,13 +35,14 @@
 		"reduceVolumeOnUnfocused": {
 			"name": "Reduce Volume on Unfocused",
 			"type": "bool",
+			"enable-if": "enabled",
 			"default": true
 		},
 		"bgVolumeReductionPercent": {
 			"name": "BG Volume Reduction (% of your current BG Volume)",
 			"description": "Decide how much to reduce the BG Volume by (as a percentage of your current BG Volume) when the game window is unfocused.",
 			"type": "float",
-			"enable-if": "reduceVolumeOnUnfocused",
+			"enable-if": "enabled && reduceVolumeOnUnfocused",
 			"default": 10,
 			"min": 0,
 			"max": 100,
@@ -56,7 +58,7 @@
 			"name": "SFX Volume Reduction (% of your current SFX Volume)",
 			"description": "Decide how much to reduce the SFX Volume by (as a percentage of your current SFX Volume) when the game window is unfocused.",
 			"type": "float",
-			"enable-if": "reduceVolumeOnUnfocused",
+			"enable-if": "enabled && reduceVolumeOnUnfocused",
 			"default": 10,
 			"min": 0,
 			"max": 100,
