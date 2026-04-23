@@ -5,7 +5,7 @@
 		"mac": "2.2081"
 	},
 	"id": "raydeeux.dynamicfps",
-	"name": "DynamicFPS",
+	"name": "DynamicFPS(AndVolume)",
 	"version": "v1.0.0",
 	"developer": "RayDeeUx",
 	"description": "Cross-platform desktop mod to lower FPS (and volume) on unfocus.",

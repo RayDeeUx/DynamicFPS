@@ -1,4 +1,4 @@
-# DynamicFPS
+# DynamicFPS(AndVolume)
 Lowers FPS when game is unfocused. Optionally lowers game volume as well.
 
 Inspirations (mostly based on GitHub username):
