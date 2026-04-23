@@ -45,7 +45,6 @@ void performUnfocus() {
 	gm->m_customFPSTarget = originalFPSValue * fpsReductionPercent;
 	CCDirector::get()->setAnimationInterval(1.f / std::clamp<float>((gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f), 1.f, originalFPSValue));
 	#endif
-
 	#ifdef GEODE_IS_MACOS
 	if (sdl && sdl->getSettingValue<bool>("disable-vsync") && !sdl->getSettingValue<bool>("uncap-framerate")) {
 		wasQualifiedForSDL = true;
@@ -76,7 +75,6 @@ void performRefocus() {
 	gm->m_customFPSTarget = originalFPSValue;
 	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
 	#endif
-
 	#ifdef GEODE_IS_MACOS
 	Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
 	if (sdl && wasQualifiedForSDL) {
@@ -105,7 +103,6 @@ $on_game(Loaded) {
 	GameManager::get()->schedule(schedule_selector(DynamicFPSObserverForWindows::checkFocusScheduler), .125f);
 }
 #endif
-
 #ifdef GEODE_IS_MACOS
 #include <Geode/modify/AppDelegate.hpp>
 class $modify(MyAppDelegate, AppDelegate) {
