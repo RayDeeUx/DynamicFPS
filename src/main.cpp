@@ -1,5 +1,3 @@
-#include <Geode/modify/AppDelegate.hpp>
-
 using namespace geode::prelude;
 
 bool theShowIsGo = false;
@@ -43,6 +41,7 @@ void performUnfocus() {
 
 	#ifdef GEODE_IS_WINDOWS
 	gm->m_customFPSTarget = originalFPSValue * fpsReductionPercent;
+	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
 	#endif
 
 	#ifdef GEODE_IS_MACOS
@@ -74,6 +73,7 @@ void performRefocus() {
 
 	#ifdef GEODE_IS_WINDOWS
 	gm->m_customFPSTarget = originalFPSValue;
+	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
 	#endif
 
 	#ifdef GEODE_IS_MACOS
@@ -106,15 +106,18 @@ $on_game(Loaded) {
 #endif
 
 #ifdef GEODE_IS_MACOS
+#include <Geode/modify/AppDelegate.hpp>
 class $modify(MyAppDelegate, AppDelegate) {
 	void applicationWillResignActive() {
 		AppDelegate::applicationWillResignActive();
 		if (!unfocusedForFirstTime) unfocusedForFirstTime = true;
+		theShowIsGo = true;
 		performUnfocus();
 	}
 	void applicationWillBecomeActive() {
 		AppDelegate::applicationWillBecomeActive();
 		if (!unfocusedForFirstTime) return;
+		theShowIsGo = true;
 		performRefocus();
 	}
 };
@@ -124,14 +127,14 @@ $on_game(Exiting) {
 	if (!isUnfocused) return;
 	GameManager* gm = GameManager::get();
 	gm->m_customFPSTarget = originalFPSValue;
+	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
 	FMODAudioEngine::get()->setBackgroundMusicVolume(musicVolumeOriginal);
 	FMODAudioEngine::get()->setEffectsVolume(sfxVolumeOriginal);
 }
 
 $on_game(ModsLoaded) {
-	theShowIsGo = true;
-
 	#ifdef GEODE_IS_WINDOWS
+	theShowIsGo = true;
 	enabled = Mod::get()->getSettingValue<bool>("enabled");
 	originalFPSValue = GameManager::get()->m_customFPSTarget;
 	#endif
