@@ -2,7 +2,9 @@
 
 using namespace geode::prelude;
 
-bool theShowIsGo = false; 
+bool theShowIsGo = false;
+
+bool unfocusedForFirstTime = false;
 
 bool isUnfocused = false;
 
@@ -107,10 +109,12 @@ $on_game(Loaded) {
 class $modify(MyAppDelegate, AppDelegate) {
 	void applicationWillResignActive() {
 		AppDelegate::applicationWillResignActive();
+		if (!unfocusedForFirstTime) unfocusedForFirstTime = true;
 		performUnfocus();
 	}
 	void applicationWillBecomeActive() {
 		AppDelegate::applicationWillBecomeActive();
+		if (!unfocusedForFirstTime) return;
 		performRefocus();
 	}
 };
