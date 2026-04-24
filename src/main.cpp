@@ -32,7 +32,7 @@ void performUnfocus() {
 	#ifdef GEODE_IS_WINDOWS
 	originalFPSValue = gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f;
 	#endif
-	#ifdef GEODE_COMP_GD_VERSION > 22074
+	#if GEODE_COMP_GD_VERSION > 22074
 	#ifdef GEODE_IS_MACOS
 	Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
 	trueOriginalFPSFromSDL = sdl->getSettingValue<int>("framerate-limit");
@@ -51,7 +51,7 @@ void performUnfocus() {
 	CCApplication::sharedApplication()->toggleVerticalSync(false);
 	CCDirector::get()->setAnimationInterval(1.f / std::clamp<float>((gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f), 10.f, originalFPSValue));
 	#endif
-	#ifdef GEODE_COMP_GD_VERSION > 22074
+	#if GEODE_COMP_GD_VERSION > 22074
 	#ifdef GEODE_IS_MACOS
 	if (sdl && sdl->getSettingValue<bool>("disable-vsync") && !sdl->getSettingValue<bool>("uncap-framerate")) {
 		wasQualifiedForSDL = true;
@@ -85,7 +85,7 @@ void performRefocus() {
 	CCApplication::sharedApplication()->toggleVerticalSync(gm->getGameVariable("0030"));
 	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
 	#endif
-	#ifdef GEODE_COMP_GD_VERSION > 22074
+	#if GEODE_COMP_GD_VERSION > 22074
 	#ifdef GEODE_IS_MACOS
 	Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl");
 	if (sdl && wasQualifiedForSDL) {
@@ -115,7 +115,7 @@ $on_game(Loaded) {
 	GameManager::get()->schedule(schedule_selector(DynamicFPSObserverForWindows::checkFocusScheduler), .125f);
 }
 #endif
-#ifdef GEODE_COMP_GD_VERSION > 22074
+#if GEODE_COMP_GD_VERSION > 22074
 #ifdef GEODE_IS_MACOS
 #include <Geode/modify/AppDelegate.hpp>
 class $modify(MyAppDelegate, AppDelegate) {
@@ -135,6 +135,7 @@ class $modify(MyAppDelegate, AppDelegate) {
 #endif
 #endif
 
+/*
 $on_game(Exiting) {
 	if (!isUnfocused) return;
 	GameManager* gm = GameManager::get();
@@ -144,7 +145,7 @@ $on_game(Exiting) {
 	CCApplication::sharedApplication()->toggleVerticalSync(gm->getGameVariable("0030"));
 	CCDirector::get()->setAnimationInterval(1.f / (gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f));
 	#endif
-	#ifdef GEODE_COMP_GD_VERSION > 22074
+	#if GEODE_COMP_GD_VERSION > 22074
 	#ifdef GEODE_IS_MACOS
 	if (Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl"); sdl) {
 		sdl->setSettingValue<int>("framerate-limit", trueOriginalFPSFromSDL);
@@ -154,6 +155,7 @@ $on_game(Exiting) {
 	FMODAudioEngine::get()->setBackgroundMusicVolume(musicVolumeOriginal);
 	FMODAudioEngine::get()->setEffectsVolume(sfxVolumeOriginal);
 }
+*/
 
 $on_game(ModsLoaded) {
 	#ifdef GEODE_IS_WINDOWS
@@ -162,7 +164,7 @@ $on_game(ModsLoaded) {
 	enabled = Mod::get()->getSettingValue<bool>("enabled");
 	originalFPSValue = gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f;
 	#endif
-	#ifdef GEODE_COMP_GD_VERSION > 22074
+	#if GEODE_COMP_GD_VERSION > 22074
 	#ifdef GEODE_IS_MACOS
 	enabled = Mod::get()->getSettingValue<bool>("enabled") && Loader::get()->isModLoaded("zmx.sdl");
 	if (Mod* sdl = Loader::get()->getLoadedMod("zmx.sdl"); sdl) {
@@ -173,7 +175,7 @@ $on_game(ModsLoaded) {
 	#endif
 	listenForSettingChanges<bool>("enabled", [](const bool enabledNew) {
 		enabled = enabledNew;
-		#ifdef GEODE_COMP_GD_VERSION > 22074
+		#if GEODE_COMP_GD_VERSION > 22074
 		#ifdef GEODE_IS_MACOS
 		if (Loader::get()->isModLoaded("zmx.sdl")) return;
 		MDPopup::create("Heads up!", "DynamicFPS <c-ff0000>***__REQUIRES__***</c> <cl>SDL Mod by qimiko</c> in order to work! Otherwise, this mod is effectively deadweight!\n\n<mod:zmx.sdl>", "I Understand")->show();
