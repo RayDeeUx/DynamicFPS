@@ -1,8 +1,7 @@
 {
-	"geode": "5.6.1",
+	"geode": "4.10.2",
 	"gd": {
-		"win": "2.2081",
-		"mac": "2.2081"
+		"win": "2.2081"
 	},
 	"id": "raydeeux.dynamicfps",
 	"name": "DynamicFPS(AndVolume)",
@@ -69,12 +68,6 @@
 				"slider": true,
 				"slider-step": 0.01
 			}
-		}
-	},
-	"dependencies": {
-		"zmx.sdl": {
-			"version": ">=1.0.0",
-			"platforms": ["mac"]
 		}
 	},
 	"tags": [ "offline", "enhancement", "utility", "universal", "performance", "cheat" ],
