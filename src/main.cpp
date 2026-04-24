@@ -210,10 +210,10 @@ class $modify(MyMenuLayer, MenuLayer) {
 	listenForSettingChanges<float>("sfxVolumeReductionPercent", [](const float sfxVolumeReductionPercentNew) {
 		sfxVolumeReductionPercent = std::clamp<float>(sfxVolumeReductionPercentNew, 0, 100) / 100.f;
 	});
-	#if GEODE_COMP_GD_VERSION > 22074
+	#if GEODE_COMP_GD_VERSION < 22081
 	return true;
 	#endif
 }
 #if GEODE_COMP_GD_VERSION < 22081
-};
+;
 #endif
