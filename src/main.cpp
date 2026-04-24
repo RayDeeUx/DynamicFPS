@@ -215,5 +215,5 @@ class $modify(MyMenuLayer, MenuLayer) {
 	#endif
 }
 #if GEODE_COMP_GD_VERSION < 22081
-;
+};
 #endif
