@@ -135,7 +135,7 @@ class $modify(MyAppDelegate, AppDelegate) {
 #endif
 #endif
 
-/*
+#if GEODE_COMP_GD_VERSION > 22074
 $on_game(Exiting) {
 	if (!isUnfocused) return;
 	GameManager* gm = GameManager::get();
@@ -155,7 +155,7 @@ $on_game(Exiting) {
 	FMODAudioEngine::get()->setBackgroundMusicVolume(musicVolumeOriginal);
 	FMODAudioEngine::get()->setEffectsVolume(sfxVolumeOriginal);
 }
-*/
+#endif
 
 #if GEODE_COMP_GD_VERSION > 22074
 $on_game(ModsLoaded) {
