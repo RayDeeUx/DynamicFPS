@@ -157,7 +157,15 @@ $on_game(Exiting) {
 }
 */
 
+#if GEODE_COMP_GD_VERSION > 22074
 $on_game(ModsLoaded) {
+#endif
+#if GEODE_COMP_GD_VERSION < 22081
+#include <Geode/modify/MenuLayer.hpp>
+class $modify(MyMenuLayer, MenuLayer) {
+	bool init() {
+		if (!MenuLayer::init()) return false;
+#endif
 	#ifdef GEODE_IS_WINDOWS
 	theShowIsGo = true;
 	GameManager* gm = GameManager::get();
@@ -202,4 +210,10 @@ $on_game(ModsLoaded) {
 	listenForSettingChanges<float>("sfxVolumeReductionPercent", [](const float sfxVolumeReductionPercentNew) {
 		sfxVolumeReductionPercent = std::clamp<float>(sfxVolumeReductionPercentNew, 0, 100) / 100.f;
 	});
+	#if GEODE_COMP_GD_VERSION < 22081
+	return true;
+	#endif
 }
+#if GEODE_COMP_GD_VERSION < 22081
+;
+#endif
