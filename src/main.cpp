@@ -149,7 +149,6 @@ class $modify(MyAppDelegate, AppDelegate) {
 
 $on_game(Exiting) {
 	stopCheckingForFocus = true;
-	log::debug("restoreValues from Exiting");
 	restoreValues();
 }
 
