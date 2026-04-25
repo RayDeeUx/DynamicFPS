@@ -74,11 +74,8 @@
 	"dependencies": {
 		"zmx.sdl": {
 			"version": ">=1.0.0",
-			"required": {
-				"win": false,
-				"mac": true
-			},
-			"platforms": ["mac"]
+			"platforms": ["mac"],
+			"required": true
 		}
 	},
 	"tags": [ "offline", "enhancement", "utility", "universal", "performance", "cheat" ],
