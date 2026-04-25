@@ -146,6 +146,7 @@ class $modify(MyAppDelegate, AppDelegate) {
 };
 #endif
 
+// fix a bug where the wrong values would be saved to FMOD and zmx.sdl (only when confirming exit from popup, apparently)
 #include <Geode/modify/MenuLayer.hpp>
 class $modify(MyMenuLayer, MenuLayer) {
 	void endGame() {
@@ -166,6 +167,14 @@ $on_game(ModsLoaded) {
 	GameManager* gm = GameManager::get();
 	enabled = Mod::get()->getSettingValue<bool>("enabled");
 	originalFPSValue = gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f;
+	// according to local crackhead omgrod and more trustworthy lead dev cvolton,
+	// platform-specific dependencies are not enforced properly when downloading from the index.
+	// seeing as SDL Mod was designed to be macOS-exclusive from Day One and has no real reason
+	// to be ported over to Windows (and nothing is loaded anyway), automatic uninstall instead.
+	// "mm for as much as i don't really like the idea i suppose you could try" -qimiko/zmx/chloe
+	if (Loader::get()->isModInstalled("zmx.sdl") && Loader::get()->getInstalledMod("zmx.sdl")) {
+		Loader::get()->getInstalledMod("zmx.sdl")->uninstall();
+	}
 	#endif
 	#ifdef GEODE_IS_MACOS
 	enabled = Mod::get()->getSettingValue<bool>("enabled") && Loader::get()->isModLoaded("zmx.sdl");
