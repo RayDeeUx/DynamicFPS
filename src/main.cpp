@@ -23,8 +23,10 @@ float sfxVolumeReductionPercent = .1f;
 
 bool wasQualifiedForSDL = false;
 
+bool stopCheckingForFocus = false;
+
 void performUnfocus() {
-	if (isUnfocused) return;
+	if (stopCheckingForFocus || isUnfocused) return;
 	if (!enabled || !theShowIsGo) return;
 	isUnfocused = true;
 
@@ -70,7 +72,7 @@ void performUnfocus() {
 }
 
 void performRefocus() {
-	if (!isUnfocused) return;
+	if (stopCheckingForFocus || !isUnfocused) return;
 	if (!enabled || !theShowIsGo) return;
 	isUnfocused = false;
 
@@ -95,39 +97,7 @@ void performRefocus() {
 	}
 }
 
-#ifdef GEODE_IS_WINDOWS
-class DynamicFPSObserverForWindows final : public CCNode {
-public:
-	void checkFocusScheduler(float) { checkFocus(); }
-	static void checkFocus() {
-		if (GetActiveWindow() == WindowFromDC(wglGetCurrentDC())) performRefocus();
-		else performUnfocus();
-	}
-};
-
-$on_game(Loaded) {
-	GameManager::get()->schedule(schedule_selector(DynamicFPSObserverForWindows::checkFocusScheduler), .125f);
-}
-#endif
-#ifdef GEODE_IS_MACOS
-#include <Geode/modify/AppDelegate.hpp>
-class $modify(MyAppDelegate, AppDelegate) {
-	void applicationWillResignActive() {
-		AppDelegate::applicationWillResignActive();
-		if (!unfocusedForFirstTime) unfocusedForFirstTime = true;
-		theShowIsGo = true;
-		performUnfocus();
-	}
-	void applicationWillBecomeActive() {
-		AppDelegate::applicationWillBecomeActive();
-		if (!unfocusedForFirstTime) return;
-		theShowIsGo = true;
-		performRefocus();
-	}
-};
-#endif
-
-$on_game(Exiting) {
+void restoreValues() {
 	if (!isUnfocused) return;
 	GameManager* gm = GameManager::get();
 	#ifdef GEODE_IS_WINDOWS
@@ -143,6 +113,48 @@ $on_game(Exiting) {
 	#endif
 	FMODAudioEngine::get()->setBackgroundMusicVolume(musicVolumeOriginal);
 	FMODAudioEngine::get()->setEffectsVolume(sfxVolumeOriginal);
+}
+
+#ifdef GEODE_IS_WINDOWS
+class DynamicFPSObserverForWindows final : public CCNode {
+public:
+	void checkFocusScheduler(float) { checkFocus(); }
+	static void checkFocus() {
+		if (GetActiveWindow() == WindowFromDC(wglGetCurrentDC())) performRefocus();
+		else performUnfocus();
+	}
+};
+
+$on_game(Loaded) {
+	GameManager::get()->schedule(schedule_selector(DynamicFPSObserverForWindows::checkFocusScheduler), .125f);
+}
+#endif
+
+#include <Geode/modify/AppDelegate.hpp>
+class $modify(MyAppDelegate, AppDelegate) {
+	#ifdef GEODE_IS_MACOS
+	void applicationWillResignActive() {
+		AppDelegate::applicationWillResignActive();
+		if (!unfocusedForFirstTime) unfocusedForFirstTime = true;
+		theShowIsGo = true;
+		performUnfocus();
+	}
+	void applicationWillBecomeActive() {
+		AppDelegate::applicationWillBecomeActive();
+		if (!unfocusedForFirstTime) return;
+		theShowIsGo = true;
+		performRefocus();
+	}
+	#endif
+	void platformShutdown() {
+		stopCheckingForFocus = true;
+		AppDelegate::platformShutdown();
+		restoreValues();
+	}
+};
+
+$on_game(Exiting) {
+	restoreValues();
 }
 
 $on_game(ModsLoaded) {
@@ -172,18 +184,18 @@ $on_game(ModsLoaded) {
 		reduceVolumeOnUnfocused = reduceVolumeOnUnfocusedNew;
 	});
 
-	fpsReductionPercent = std::clamp<float>(Mod::get()->getSettingValue<float>("fpsReductionPercent"), 0.1f, 100.f) / 100.f;
+	fpsReductionPercent = std::clamp<float>(Mod::get()->getSettingValue<float>("fpsReductionPercent"), .001f, 100.f) / 100.f;
 	listenForSettingChanges<float>("fpsReductionPercent", [](const float fpsReductionPercentNew) {
-		fpsReductionPercent = std::clamp<float>(fpsReductionPercentNew, 0.1f, 100.f) / 100.f;
+		fpsReductionPercent = std::clamp<float>(fpsReductionPercentNew, .001f, 100.f) / 100.f;
 	});
 
-	bgVolumeReductionPercent = std::clamp<float>(Mod::get()->getSettingValue<float>("bgVolumeReductionPercent"), 0, 100) / 100.f;
+	bgVolumeReductionPercent = std::clamp<float>(Mod::get()->getSettingValue<float>("bgVolumeReductionPercent"), 0.f, 100.f) / 100.f;
 	listenForSettingChanges<float>("bgVolumeReductionPercent", [](const float bgVolumeReductionPercentNew) {
-		bgVolumeReductionPercent = std::clamp<float>(bgVolumeReductionPercentNew, 0, 100) / 100.f;
+		bgVolumeReductionPercent = std::clamp<float>(bgVolumeReductionPercentNew, 0.f, 100.f) / 100.f;
 	});
 
-	sfxVolumeReductionPercent = std::clamp<float>(Mod::get()->getSettingValue<float>("sfxVolumeReductionPercent"), 0, 100) / 100.f;
+	sfxVolumeReductionPercent = std::clamp<float>(Mod::get()->getSettingValue<float>("sfxVolumeReductionPercent"), 0.f, 100.f) / 100.f;
 	listenForSettingChanges<float>("sfxVolumeReductionPercent", [](const float sfxVolumeReductionPercentNew) {
-		sfxVolumeReductionPercent = std::clamp<float>(sfxVolumeReductionPercentNew, 0, 100) / 100.f;
+		sfxVolumeReductionPercent = std::clamp<float>(sfxVolumeReductionPercentNew, 0.f, 100.f) / 100.f;
 	});
 }

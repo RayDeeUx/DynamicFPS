@@ -6,7 +6,7 @@
 	},
 	"id": "raydeeux.dynamicfps",
 	"name": "DynamicFPS(AndVolume)",
-	"version": "v1.0.0",
+	"version": "v1.0.1",
 	"developer": "RayDeeUx",
 	"description": "Cross-platform desktop mod to lower FPS (and volume) on unfocus.",
 	"repository": "https://github.com/RayDeeUx/DynamicFPS",
@@ -22,7 +22,7 @@
 			"type": "float",
 			"enable-if": "enabled",
 			"default": 10,
-			"min": 0.1,
+			"min": 0.001,
 			"max": 100,
 			"control": {
 				"arrows": true,

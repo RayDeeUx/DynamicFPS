@@ -5,7 +5,6 @@ Inspirations (mostly based on GitHub username):
 - juliand665 + LostLuma
 - Prevter
 - PolloVerde2
-- $!D@$tuff
 
 <c-ff0000>***__NOTE__***: FOR BEST RESULTS, ***__DO NOT USE VSYNC.__***</c>
 

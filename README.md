@@ -5,7 +5,6 @@ Inspirations (mostly based on GitHub username):
 - juliand665 + LostLuma
 - Prevter
 - PolloVerde2
-- $!D@$tuff
 
 Mod logo and idea based on the original mod logo of the Dynamic FPS mod for Minecraft Fabric.
 
