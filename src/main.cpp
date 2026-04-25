@@ -129,10 +129,9 @@ $on_game(Loaded) {
 	GameManager::get()->schedule(schedule_selector(DynamicFPSObserverForWindows::checkFocusScheduler), .125f);
 }
 #endif
-
+#ifdef GEODE_IS_MACOS
 #include <Geode/modify/AppDelegate.hpp>
 class $modify(MyAppDelegate, AppDelegate) {
-	#ifdef GEODE_IS_MACOS
 	void applicationWillResignActive() {
 		AppDelegate::applicationWillResignActive();
 		if (!unfocusedForFirstTime) unfocusedForFirstTime = true;
@@ -145,10 +144,14 @@ class $modify(MyAppDelegate, AppDelegate) {
 		theShowIsGo = true;
 		performRefocus();
 	}
-	#endif
+};
+#endif
+
+#include <Geode/modify/PlatformToolbox.hpp>
+class $modify(MyPlatformToolbox, PlatformToolbox) {
 	void platformShutdown() {
 		stopCheckingForFocus = true;
-		AppDelegate::platformShutdown();
+		PlatformToolbox::platformShutdown();
 		restoreValues();
 	}
 };
