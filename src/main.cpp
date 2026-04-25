@@ -147,17 +147,8 @@ class $modify(MyAppDelegate, AppDelegate) {
 };
 #endif
 
-#include <Geode/modify/PlatformToolbox.hpp>
-class $modify(MyPlatformToolbox, PlatformToolbox) {
-	void platformShutdown() {
-		stopCheckingForFocus = true;
-		PlatformToolbox::platformShutdown();
-		log::debug("restoreValues from PlatformToolbox");
-		restoreValues();
-	}
-};
-
 $on_game(Exiting) {
+	stopCheckingForFocus = true;
 	log::debug("restoreValues from Exiting");
 	restoreValues();
 }
