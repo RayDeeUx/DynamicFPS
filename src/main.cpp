@@ -98,7 +98,6 @@ void performRefocus() {
 }
 
 void restoreValues() {
-	// if (!isUnfocused) return;
 	GameManager* gm = GameManager::get();
 	#ifdef GEODE_IS_WINDOWS
 	gm->m_customFPSTarget = originalFPSValue;
@@ -148,8 +147,8 @@ class $modify(MyAppDelegate, AppDelegate) {
 #endif
 
 $on_game(Exiting) {
-	stopCheckingForFocus = true;
 	restoreValues();
+	stopCheckingForFocus = true;
 }
 
 $on_game(ModsLoaded) {
