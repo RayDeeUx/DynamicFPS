@@ -146,6 +146,15 @@ class $modify(MyAppDelegate, AppDelegate) {
 };
 #endif
 
+#include <Geode/modify/MenuLayer.hpp>
+class $modify(MyMenuLayer, MenuLayer) {
+	void endGame() {
+		restoreValues();
+		stopCheckingForFocus = true;
+		MenuLayer::endGame();
+	}
+};
+
 $on_game(Exiting) {
 	restoreValues();
 	stopCheckingForFocus = true;
