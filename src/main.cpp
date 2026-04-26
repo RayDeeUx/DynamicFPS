@@ -98,6 +98,7 @@ void performRefocus() {
 }
 
 void restoreValues() {
+	if (!isUnfocused) return;
 	GameManager* gm = GameManager::get();
 	#ifdef GEODE_IS_WINDOWS
 	gm->m_customFPSTarget = originalFPSValue;
