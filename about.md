@@ -18,6 +18,8 @@ Inspirations (based on GitHub username):
 
 <mod:zmx.sdl>
 
+<co>***__NOTE FOR WINDOWS USERS__***:</c> <cl>SDL Mod by qimiko</c> <co>gets auto-installed when downloading this mod. This is a bug with the Geode index, and starting from v1.0.1 of this mod, the current fix is to ***__AUTOMATICALLY UNINSTALL__***</c> <cl>SDL Mod by qimiko</c> <co>. NO FURTHER ACTION IS NEEDED FROM YOU ASIDE FROM RESTARTING THE GAME. Sorry for the inconvenience, guys!</c>
+
 Mod logo and idea based on the original mod logo of the Dynamic FPS mod for Minecraft Fabric.
 
 This [Geode mod](https://geode-sdk.org) is licensed under LGPLv2. To report bugs or get help with using my mods, press the Discord button in the lower left corner.
