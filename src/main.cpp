@@ -132,6 +132,7 @@ $on_game(Loaded) {
 #ifdef GEODE_IS_MACOS
 bool isFocused();
 class DynamicFPSObserverForWindows final : public CCNode {
+public:
 	void checkFocusScheduler(float) { checkFocus(); }
 	static void checkFocus() {
 		if (isFocused()) performRefocus();
