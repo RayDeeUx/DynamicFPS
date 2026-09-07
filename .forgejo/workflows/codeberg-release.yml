@@ -20,18 +20,6 @@ jobs:
             image: macos
             target: MacOS
 
-          - name: iOS
-            image: ios
-            target: iOS
-
-          - name: Android32
-            image: android
-            target: Android32
-
-          - name: Android64
-            image: android
-            target: Android64
-
     name: ${{ matrix.config.name }}
     runs-on: codeberg-medium
     container:
