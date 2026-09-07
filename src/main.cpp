@@ -135,9 +135,7 @@ class DynamicFPSObserverForMacOS final : public CCNode {
 public:
 	void checkFocusScheduler(float) { checkFocus(); }
 	static void checkFocus() {
-		const bool isFocusedB = isFocused();
-		log::info("isFocusedB: {}", isFocused());
-		if (isFocusedB) performRefocus();
+		if (isFocused()) performRefocus();
 		else performUnfocus();
 	}
 };
@@ -145,38 +143,21 @@ public:
 $on_game(Loaded) {
 	GameManager::get()->schedule(schedule_selector(DynamicFPSObserverForMacOS::checkFocusScheduler), .125f);
 }
-/*
-#include <Geode/modify/AppDelegate.hpp>
-class $modify(MyAppDelegate, AppDelegate) {
-	void applicationWillResignActive() {
-		AppDelegate::applicationWillResignActive();
-		if (!unfocusedForFirstTime) unfocusedForFirstTime = true;
-		theShowIsGo = true;
-		performUnfocus();
-	}
-	void applicationWillBecomeActive() {
-		AppDelegate::applicationWillBecomeActive();
-		if (!unfocusedForFirstTime) return;
-		theShowIsGo = true;
-		performRefocus();
-	}
-};
-*/
 #endif
 
 // fix a bug where the wrong values would be saved to FMOD and zmx.sdl (only when confirming exit from popup, apparently)
 #include <Geode/modify/MenuLayer.hpp>
 class $modify(MyMenuLayer, MenuLayer) {
 	void endGame() {
-		restoreValues();
 		stopCheckingForFocus = true;
+		restoreValues();
 		MenuLayer::endGame();
 	}
 };
 
 $on_game(Exiting) {
-	restoreValues();
 	stopCheckingForFocus = true;
+	restoreValues();
 }
 
 $on_game(ModsLoaded) {
