@@ -131,17 +131,19 @@ $on_game(Loaded) {
 #endif
 #ifdef GEODE_IS_MACOS
 bool isFocused();
-class DynamicFPSObserverForWindows final : public CCNode {
+class DynamicFPSObserverForMacOS final : public CCNode {
 public:
 	void checkFocusScheduler(float) { checkFocus(); }
 	static void checkFocus() {
-		if (isFocused()) performRefocus();
+		const bool isFocusedB = isFocused();
+		log::info("isFocusedB: {}", isFocused());
+		if (isFocusedB) performRefocus();
 		else performUnfocus();
 	}
 };
 
 $on_game(Loaded) {
-	GameManager::get()->schedule(schedule_selector(DynamicFPSObserverForWindows::checkFocusScheduler), .125f);
+	GameManager::get()->schedule(schedule_selector(DynamicFPSObserverForMacOS::checkFocusScheduler), .125f);
 }
 /*
 #include <Geode/modify/AppDelegate.hpp>
@@ -178,8 +180,8 @@ $on_game(Exiting) {
 }
 
 $on_game(ModsLoaded) {
-	#ifdef GEODE_IS_WINDOWS
 	theShowIsGo = true;
+	#ifdef GEODE_IS_WINDOWS
 	GameManager* gm = GameManager::get();
 	enabled = Mod::get()->getSettingValue<bool>("enabled");
 	originalFPSValue = gm->getGameVariable("0116") ? gm->m_customFPSTarget : 60.f;
