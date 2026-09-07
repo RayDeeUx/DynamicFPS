@@ -20,5 +20,14 @@ endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
+if (APPLE)
+    target_sources(${PROJECT_NAME} PRIVATE src/main.mm)
+    set_source_files_properties(src/main.mm PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+    target_link_libraries(MyApp PRIVATE
+        "-framework Cocoa"
+        "-framework OpenGL"
+    )
+endif()
+
 # Set up dependencies, resources, and link Geode.
 setup_geode_mod(${PROJECT_NAME})

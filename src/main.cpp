@@ -130,6 +130,19 @@ $on_game(Loaded) {
 }
 #endif
 #ifdef GEODE_IS_MACOS
+bool isFocused();
+class DynamicFPSObserverForWindows final : public CCNode {
+	void checkFocusScheduler(float) { checkFocus(); }
+	static void checkFocus() {
+		if (isFocused()) performRefocus();
+		else performUnfocus();
+	}
+};
+
+$on_game(Loaded) {
+	GameManager::get()->schedule(schedule_selector(DynamicFPSObserverForWindows::checkFocusScheduler), .125f);
+}
+/*
 #include <Geode/modify/AppDelegate.hpp>
 class $modify(MyAppDelegate, AppDelegate) {
 	void applicationWillResignActive() {
@@ -145,6 +158,7 @@ class $modify(MyAppDelegate, AppDelegate) {
 		performRefocus();
 	}
 };
+*/
 #endif
 
 // fix a bug where the wrong values would be saved to FMOD and zmx.sdl (only when confirming exit from popup, apparently)

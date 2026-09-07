@@ -1,4 +1,6 @@
 # DynamicFPS(AndVolume) Changelog
+## v1.0.3
+- Codeberg.
 ## v1.0.2
 - Fix a bug where the previous update was only available for macOS.
 ## v1.0.1
