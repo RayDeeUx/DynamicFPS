@@ -1,4 +1,6 @@
 # DynamicFPS(AndVolume) Changelog
+## v1.0.4
+- 2.2091 as a game update was a net negative.
 ## v1.0.3
 - Refactor focus window detection for macOS.
 ## v1.0.2
